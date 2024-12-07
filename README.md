@@ -1,177 +1,50 @@
-# About 🚀
+# React + TypeScript + Vite
 
-This Repo is for the final project!
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Project Title
-### EnrollAI
+Currently, two official plugins are available:
 
-## Project Description
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+
+- Configure the top-level `parserOptions` property like this:
+
+```js
+export default tseslint.config({
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
-Our AI-powered course registration platform simplifies the academic planning process by helping students
-select courses that align with their academic goals and career aspirations. Using smart algorithms, the
-platform suggests personalized course pathways based on department guidelines, prerequisites, and individual
-professional objectives, ensuring an efficient and seamless registration experience. With intuitive semester
-planning, real-time prerequisite validation, students can confidently chart their path to success while
-staying on track for graduation.
-```
-### Team Member Details
 
-Name: Rutwik Ganagi  
-Email Id: ganagi.r@northeastern.edu
+- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
+- Optionally add `...tseslint.configs.stylisticTypeChecked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-Name: Trivikram Bhavesh Budhabhatti    
-Email Id: budhabhatti.t@northeastern.edu
+```js
+// eslint.config.js
+import react from 'eslint-plugin-react'
 
-Name: Sarthak Deshmukh  
-Email Id: deshmukh.sar@northeastern.edu
-
-Name: Payal Jadhav  
-Email Id: jadhav.pay@northeastern.edu
-
-# Domain Model for EnrollAI
-
-```mermaid
----
-title: EnrollAI
----
-
-classDiagram
-
-  %% User Role Hierarchy
-  class User {
-    +String id
-    +String name
-    +String email
-    +String role
-  }
-
-  class Student {
-    +String firstName
-    +String lastName
-    +List<CourseEnrollment> enrolledCourses
-    +enrollInCourse(CourseOffer)
-    +getRegisteredCourses()
-    +useCourseRecommendationBot()
-  }
-
-  class Faculty {
-    +String firstName
-    +String lastName
-    +List<CourseOffer> coursesTaught
-    +addCourse(CourseOffer)
-    +removeCourse(CourseOffer)
-    +viewRegisteredStudents(CourseOffer)
-  }
-
-  class Admin {
-    +String firstName
-    +String lastName
-    +manageStudentAccounts()
-    +manageFacultyAccounts()
-    +manageCourses()
-  }
-
-  %% Enumeration for Semester (Value Object)
-  class Semester {
-    <<enumeration>>
-    SPRING
-    SUMMER
-    FALL
-  }
-
-  %% Term Class (Value Object)
-  class Term {
-    <<value_object>>
-    +Integer year
-    +Semester semester
-    +getTermString(): String
-    +isFutureTerm(): Boolean
-    +isSameTerm(Term): Boolean
-  }
-
-  %% Course Class
-  class Course {
-    +String name
-    +String courseCode
-    +List<CourseOffer> offeredCourses
-    +List<Course> prerequisites
-    +addPrerequisite(Course)
-    +removePrerequisite(Course)
-    +hasPrerequisite(Course): Boolean
-    +isOfferedInTerm(Term): Boolean
-  }
-
-  %% Course Offer Class (specific offering for a term)
-  class CourseOffer {
-    +Course course
-    +Term term
-    +String instructor
-    +Integer maxSeats
-    +Integer currentSeats
-    +addStudent(Student)
-    +removeStudent(Student)
-    +getRegisteredStudents()
-  }
-
-  %% Enrollment Class
-  class CourseEnrollment {
-    +Student student
-    +CourseOffer courseOffer
-    +String enrollmentStatus
-    +isStudentEnrolled(): Boolean  
-    +isValidEnrollment(): Boolean  
-    +getEnrollmentDetails(): String  
-  }
-
-  %% Chatbot Class (for course recommendations)
-  class CourseRecommendationBot {
-    +recommendCourses(Student)
-    +getPrerequisiteBasedSuggestions(Course)
-    +getProgramBasedSuggestions(Student)
-  }
-
-  %% Department Class
-  class Department {
-    <<value object>>
-    +String name
-    +List<Course> offeredCourses
-    +List<Faculty> facultyMembers
-    +addCourse(Course)
-    +addFaculty(Faculty)
-  }
-
-  %% Relationships
-
-  %% User Hierarchy
-  User <|-- Student
-  User <|-- Faculty
-  User <|-- Admin
-
-  %% Enrollment Relationships
-  CourseEnrollment *-- Student
-  CourseEnrollment *-- CourseOffer
-  CourseOffer *-- Course
-  CourseOffer *-- Term
-  Term *-- Semester
-
-  %% Faculty to Course Offer
-  Faculty "1" *-- "0..*" CourseOffer : teaches
-
-  %% Faculty manages Course Offerings
-  Admin "1" --> "0..*" Faculty : manages
-  Admin "1" --> "0..*" Student : manages
-
-  %% Faculty in Department
-  Department "1" *-- "0..*" Faculty : employs
-
-  %% Courses belong to Departments
-  Department "1" *-- "0..*" Course : offers
-
-  %% Chatbot Dependency on Student
-  CourseRecommendationBot --> Student : recommends to
-  CourseRecommendationBot --> Course : analyzes
-  CourseRecommendationBot --> Term : considers
-
-  %% Course Prerequisite Relationship
-  Course "0..*" --> "0..*" Course : prerequisite for
+export default tseslint.config({
+  // Set the react version
+  settings: { react: { version: '18.3' } },
+  plugins: {
+    // Add the react plugin
+    react,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended rules
+    ...react.configs.recommended.rules,
+    ...react.configs['jsx-runtime'].rules,
+  },
+})
 ```

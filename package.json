@@ -1,9 +1,12 @@
 {
   "name": "app",
   "private": true,
+  "homepage": "https://sarthak-wq.github.io",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -51,6 +54,7 @@
     "eslint": "^9.13.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
+    "gh-pages": "^6.2.0",
     "globals": "^15.11.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.11.0",
